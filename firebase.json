@@ -1,0 +1,41 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "gestor-tarefas-d1455",
+          "appId": "1:101516272662:android:df3fc6fe9919feca0d4137",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "gestor-tarefas-d1455",
+          "appId": "1:101516272662:ios:d59135de0f6c9d5a0d4137",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "macos": {
+        "default": {
+          "projectId": "gestor-tarefas-d1455",
+          "appId": "1:101516272662:ios:d59135de0f6c9d5a0d4137",
+          "uploadDebugSymbols": false,
+          "fileOutput": "macos/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "gestor-tarefas-d1455",
+          "configurations": {
+            "android": "1:101516272662:android:df3fc6fe9919feca0d4137",
+            "ios": "1:101516272662:ios:d59135de0f6c9d5a0d4137",
+            "macos": "1:101516272662:ios:d59135de0f6c9d5a0d4137",
+            "web": "1:101516272662:web:f462a3d193ffba680d4137",
+            "windows": "1:101516272662:web:15da6da845ab803c0d4137"
+          }
+        }
+      }
+    }
+  }
+}
