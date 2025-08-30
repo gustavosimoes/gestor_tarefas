@@ -5,7 +5,6 @@ import 'package:gestor_tarefas/src/models/task.dart';
 import 'package:gestor_tarefas/src/widgets/g_button.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/task_view_model.dart';
-import '../widgets/drag_and_drop_item.dart' hide DragAndDropItem;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,6 +27,7 @@ class _HomePageState extends State<HomePage> {
     final taskViewModel = context.watch<TaskViewModel>();
 
     return Scaffold(
+      backgroundColor: Colors.blueGrey,
       appBar: AppBar(title: const Text('Tarefas')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -111,44 +111,63 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(
               width: 1000,
-              height: 400,
+              height: 4000,
               child: DragAndDropLists(
-                listPadding: EdgeInsets.all(2),
+                listPadding: const EdgeInsets.all(2),
                 axis: Axis.horizontal,
                 children: TaskStatusEnum.values.map(
                   (status) {
                     return DragAndDropList(
-                        header: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            status.label,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      header: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          status.label,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        children: taskViewModel
-                            .getTaskByStatus(status)
-                            .map(
-                              (e) => DragAndDropItem(
-                                child: Text(e.title),
-                                canDrag: true,
+                      ),
+                      children: taskViewModel
+                          .getTaskByStatus(status)
+                          .map(
+                            (e) => DragAndDropItem(
+                              child: Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24),
+                                  child: Text(e.title),
+                                ),
                               ),
-                            )
-                            .toList());
+                            ),
+                          )
+                          .toList(),
+                    );
                   },
                 ).toList(),
                 listWidth: 300,
                 itemDraggingWidth: 250,
                 listDraggingWidth: 300,
-                onItemReorder:
-                    (oldItemIndex, oldListIndex, newItemIndex, newListIndex) {
-                  // Handle item reorder
+                onItemReorder: (oldItemIndex, oldListIndex, newItemIndex,
+                    newListIndex) async {
+                  final oldStatus = TaskStatusEnum.values[oldListIndex];
+                  final newStatus = TaskStatusEnum.values[newListIndex];
+                  final oldList = taskViewModel.getTaskByStatus(oldStatus);
+                  final newList = taskViewModel.getTaskByStatus(newStatus);
+                  final movedTask = oldList[oldItemIndex];
+
+                  // Remove da lista antiga
+                  oldList.removeAt(oldItemIndex);
+                  // Adiciona na nova posição
+                  if (oldStatus == newStatus) {
+                    newList.insert(newItemIndex, movedTask);
+                  } else {
+                    final updatedTask = movedTask.copyWith(status: newStatus);
+                    newList.insert(newItemIndex, updatedTask);
+                    await taskViewModel.updateTaskStatus(movedTask, newStatus);
+                  }
+                  setState(() {});
                 },
-                onListReorder: (oldListIndex, newListIndex) {
-                  // Handle list reorder
-                },
+                onListReorder: (_, __) {},
               ),
             ),
           ],
