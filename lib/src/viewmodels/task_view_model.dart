@@ -6,6 +6,9 @@ class TaskViewModel extends ChangeNotifier {
   FirebaseDatasource firebaseDatasource = FirebaseDatasource();
   List<TaskModel> tasks = [];
 
+  List<TaskModel> getTaskByStatus(String status) =>
+      tasks.where((task) => task.status.name == status).toList();
+
   Future<void> fetchTasks() async {
     tasks = await firebaseDatasource.getTasks();
     notifyListeners();

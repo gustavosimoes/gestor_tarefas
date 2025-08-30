@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final taskViewModel = context.watch<TaskViewModel>();
-    final tasks = taskViewModel.tasks;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Tarefas')),
       body: Padding(
@@ -50,6 +50,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                       ElevatedButton(
                         onPressed: () async {
+                          Navigator.of(ctx).pop();
+
                           await taskViewModel.addTask(
                             TaskModel(
                               title: titleController.text,
@@ -58,8 +60,6 @@ class _HomePageState extends State<HomePage> {
                               minitask: [],
                             ),
                           );
-
-                          Navigator.of(ctx).pop();
                         },
                         child: const Text('Salvar'),
                       ),
@@ -104,19 +104,41 @@ class _HomePageState extends State<HomePage> {
               label: 'Nova Tarefa',
               icon: Icons.add,
             ),
-            Expanded(
-              child: tasks.isEmpty
-                  ? const Center(child: CircularProgressIndicator())
-                  : ListView.builder(
-                      itemCount: tasks.length,
-                      itemBuilder: (context, index) {
-                        final task = tasks[index];
-                        return ListTile(
-                          title: Text(task.title),
-                        );
-                      },
-                    ),
+            const SizedBox(
+              height: 16,
             ),
+            Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: TaskStatusEnum.values.map(
+                  (status) {
+                    final tasks = taskViewModel.getTaskByStatus(status.name);
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      child: SizedBox(
+                        width: 300,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              status.label,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            ...tasks.map((task) => Card(
+                                  child: ListTile(
+                                    title: Text(task.title),
+                                    subtitle: Text(task.description),
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ).toList()),
           ],
         ),
       ),
