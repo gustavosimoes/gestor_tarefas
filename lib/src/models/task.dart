@@ -1,6 +1,20 @@
 import 'package:gestor_tarefas/src/enums/task_status_enum.dart';
 
 class TaskModel {
+  TaskModel copyWith({
+    String? title,
+    String? description,
+    TaskStatusEnum? status,
+    List<MiniTask>? minitask,
+  }) {
+    return TaskModel(
+      title: title ?? this.title,
+      description: description ?? this.description,
+      status: status ?? this.status,
+      minitask: minitask ?? this.minitask,
+    );
+  }
+
   final String title;
   final String description;
   final TaskStatusEnum status;

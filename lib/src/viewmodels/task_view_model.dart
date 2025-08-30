@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:gestor_tarefas/src/datasources/firebase_datasource.dart';
+import 'package:gestor_tarefas/src/enums/task_status_enum.dart';
 import 'package:gestor_tarefas/src/models/task.dart';
 
 class TaskViewModel extends ChangeNotifier {
+  Future<void> updateTaskStatus(TaskModel task, status) async {
+    final updatedTask = task.copyWith(status: status);
+    await firebaseDatasource.saveTask(updatedTask);
+    await fetchTasks();
+  }
+
   FirebaseDatasource firebaseDatasource = FirebaseDatasource();
   List<TaskModel> tasks = [];
 
-  List<TaskModel> getTaskByStatus(String status) =>
-      tasks.where((task) => task.status.name == status).toList();
+  List<TaskModel> getTaskByStatus(TaskStatusEnum status) =>
+      tasks.where((task) => task.status == status).toList();
 
   Future<void> fetchTasks() async {
     tasks = await firebaseDatasource.getTasks();

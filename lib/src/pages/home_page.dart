@@ -1,9 +1,11 @@
+import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
 import 'package:gestor_tarefas/src/enums/task_status_enum.dart';
 import 'package:gestor_tarefas/src/models/task.dart';
 import 'package:gestor_tarefas/src/widgets/g_button.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/task_view_model.dart';
+import '../widgets/drag_and_drop_item.dart' hide DragAndDropItem;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -107,38 +109,48 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(
               height: 16,
             ),
-            Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            SizedBox(
+              width: 1000,
+              height: 400,
+              child: DragAndDropLists(
+                listPadding: EdgeInsets.all(2),
+                axis: Axis.horizontal,
                 children: TaskStatusEnum.values.map(
                   (status) {
-                    final tasks = taskViewModel.getTaskByStatus(status.name);
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 16.0),
-                      child: SizedBox(
-                        width: 300,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              status.label,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                    return DragAndDropList(
+                        header: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            status.label,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
-                            const SizedBox(height: 8),
-                            ...tasks.map((task) => Card(
-                                  child: ListTile(
-                                    title: Text(task.title),
-                                    subtitle: Text(task.description),
-                                  ),
-                                )),
-                          ],
+                          ),
                         ),
-                      ),
-                    );
+                        children: taskViewModel
+                            .getTaskByStatus(status)
+                            .map(
+                              (e) => DragAndDropItem(
+                                child: Text(e.title),
+                                canDrag: true,
+                              ),
+                            )
+                            .toList());
                   },
-                ).toList()),
+                ).toList(),
+                listWidth: 300,
+                itemDraggingWidth: 250,
+                listDraggingWidth: 300,
+                onItemReorder:
+                    (oldItemIndex, oldListIndex, newItemIndex, newListIndex) {
+                  // Handle item reorder
+                },
+                onListReorder: (oldListIndex, newListIndex) {
+                  // Handle list reorder
+                },
+              ),
+            ),
           ],
         ),
       ),
