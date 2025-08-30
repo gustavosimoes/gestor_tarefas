@@ -1,26 +1,14 @@
 import 'package:gestor_tarefas/src/enums/task_status_enum.dart';
 
 class TaskModel {
-  TaskModel copyWith({
-    String? title,
-    String? description,
-    TaskStatusEnum? status,
-    List<MiniTask>? minitask,
-  }) {
-    return TaskModel(
-      title: title ?? this.title,
-      description: description ?? this.description,
-      status: status ?? this.status,
-      minitask: minitask ?? this.minitask,
-    );
-  }
-
+  final String? docId;
   final String title;
   final String description;
   final TaskStatusEnum status;
   final List<MiniTask> minitask;
 
   TaskModel({
+    this.docId,
     required this.title,
     required this.description,
     required this.status,
@@ -29,6 +17,7 @@ class TaskModel {
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
     return TaskModel(
+      docId: json['docId'] as String,
       title: json['title'] as String,
       description: json['description'] as String,
       status: TaskStatusEnum.fromString(json['status'] as String),
@@ -44,6 +33,21 @@ class TaskModel {
         'status': status.name,
         'minitask': minitask.map((e) => e.toJson()).toList(),
       };
+
+  TaskModel copyWith({
+    String? title,
+    String? description,
+    TaskStatusEnum? status,
+    List<MiniTask>? minitask,
+  }) {
+    return TaskModel(
+      docId: docId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      status: status ?? this.status,
+      minitask: minitask ?? this.minitask,
+    );
+  }
 }
 
 class MiniTask {

@@ -151,19 +151,10 @@ class _HomePageState extends State<HomePage> {
                     newListIndex) async {
                   final oldStatus = TaskStatusEnum.values[oldListIndex];
                   final newStatus = TaskStatusEnum.values[newListIndex];
-                  final oldList = taskViewModel.getTaskByStatus(oldStatus);
-                  final newList = taskViewModel.getTaskByStatus(newStatus);
-                  final movedTask = oldList[oldItemIndex];
-
-                  // Remove da lista antiga
-                  oldList.removeAt(oldItemIndex);
-                  // Adiciona na nova posição
-                  if (oldStatus == newStatus) {
-                    newList.insert(newItemIndex, movedTask);
-                  } else {
-                    final updatedTask = movedTask.copyWith(status: newStatus);
-                    newList.insert(newItemIndex, updatedTask);
-                    await taskViewModel.updateTaskStatus(movedTask, newStatus);
+                  if (oldStatus != newStatus) {
+                    final task =
+                        taskViewModel.getTaskByStatus(oldStatus)[oldItemIndex];
+                    await taskViewModel.updateTaskStatus(task, newStatus);
                   }
                   setState(() {});
                 },
