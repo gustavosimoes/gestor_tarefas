@@ -10,9 +10,17 @@ class FirebaseDatasource {
     return data;
   }
 
-  Future<List<TaskModel>> getData() async {
+  Future<List<TaskModel>> getTasks() async {
     final rawData = await _getData('task');
     final tasks = rawData.map((data) => TaskModel.fromJson(data)).toList();
     return tasks;
+  }
+
+  Future<void> _saveData(String collection, Map<String, dynamic> json) async {
+    await _firestore.collection(collection).add(json);
+  }
+
+  Future<void> saveTask(TaskModel task) async {
+    await _saveData('task', task.toJson());
   }
 }

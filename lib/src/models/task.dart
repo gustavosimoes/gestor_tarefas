@@ -1,7 +1,9 @@
+import 'package:gestor_tarefas/src/enums/task_status_enum.dart';
+
 class TaskModel {
   final String title;
   final String description;
-  final String status;
+  final TaskStatusEnum status;
   final List<MiniTask> minitask;
 
   TaskModel({
@@ -15,7 +17,7 @@ class TaskModel {
     return TaskModel(
       title: json['title'] as String,
       description: json['description'] as String,
-      status: json['status'] as String,
+      status: TaskStatusEnum.fromString(json['status'] as String),
       minitask: (json['minitask'] as List<dynamic>)
           .map((e) => MiniTask.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -25,7 +27,7 @@ class TaskModel {
   Map<String, dynamic> toJson() => {
         'title': title,
         'description': description,
-        'status': status,
+        'status': status.name,
         'minitask': minitask.map((e) => e.toJson()).toList(),
       };
 }
